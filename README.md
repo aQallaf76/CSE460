@@ -1,272 +1,115 @@
-# Sundevil Cafeteria Online Ordering System
+🍽️ Sundevil Cafeteria Online Ordering System
+Welcome to the Sundevil Cafeteria Online Ordering System — a modern, full-stack web application built to streamline online ordering for Arizona State University’s campus cafeteria. This system provides a seamless experience for customers placing orders, real-time management tools for kitchen staff, and insightful analytics for cafeteria administrators.
 
-A modern, full-stack web application for the Sundevil Cafeteria at Arizona State University. This system provides an intuitive online ordering experience for customers, efficient order management for kitchen staff, and comprehensive analytics for management.
+This project was designed and developed individually by Abdullah Alqallaf as part of the CSE 460 - Software Architecture course at Arizona State University.
 
-## 🏗️ Architecture
+🧱 Architecture Overview
+This system is built using a Layered MVC Architecture, which allows for clean separation between the frontend, backend, and database layers.
 
-This project implements a **Layered MVC Architecture** with:
-- **Frontend**: React.js Single Page Application (SPA)
-- **Backend**: Node.js with Express.js
-- **Database**: SQLite (development) / PostgreSQL (production)
-- **State Management**: React Context API
-- **Styling**: CSS3 with responsive design
+Frontend: React.js Single Page Application (SPA)
 
-## ✨ Features
+Backend: Node.js with Express.js
 
-### Customer Features
-- 🍽️ **Menu Browsing**: Browse menu items with search and filtering
-- 🛒 **Shopping Cart**: Add items to cart with quantity management
-- 📋 **Order Placement**: Place orders with real-time validation
-- 📱 **Order Tracking**: Real-time order status updates
-- 📱 **Responsive Design**: Works seamlessly on mobile and desktop
+Database: SQLite (for development), PostgreSQL (for production)
 
-### Kitchen Staff Features
-- 👨‍🍳 **Order Management**: View and manage incoming orders
-- 🏷️ **Status Updates**: Update order status (preparing, ready, completed)
-- 📊 **Order Queue**: Real-time order queue management
-- 🔔 **Notifications**: Instant notifications for new orders
+State Management: React Context API
 
-### Management Features
-- 📈 **Analytics Dashboard**: Sales and order analytics
-- 👥 **User Management**: Manage user accounts and roles
-- 📊 **Performance Metrics**: Monitor system performance
-- 🔧 **System Administration**: Configure system settings
+Styling: CSS3 with responsive design principles
 
-## 🚀 Quick Start
+✨ Key Features
+👤 Customer Experience
+Browse the Menu: Search and filter available items
 
-### Prerequisites
-- Node.js (v14 or higher)
-- npm (v6 or higher)
+Shopping Cart: Add items, manage quantities
 
-### Installation & Running
+Order Placement: Submit orders with real-time feedback
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd sundevil-cafeteria
-   ```
+Live Tracking: Get real-time updates on order status
 
-2. **Start the application**
-   ```bash
-   ./start.sh
-   ```
-   
-   This script will:
-   - Install all dependencies for both frontend and backend
-   - Start the backend server on port 5001
-   - Start the frontend server on port 3000
+Mobile-Friendly: Fully responsive design
 
-3. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:5001
+👨‍🍳 Kitchen Dashboard
+Order Queue: View all active orders in real-time
 
-### Manual Setup (Alternative)
+Status Control: Mark orders as preparing, ready, or completed
 
-If you prefer to run the services separately:
+Instant Notifications: Be alerted when new orders are placed
 
-1. **Backend Setup**
-   ```bash
-   cd backend
-   npm install
-   npm start
-   ```
+👔 Manager & Admin Tools
+Analytics Dashboard: View performance metrics and sales reports
 
-2. **Frontend Setup** (in a new terminal)
-   ```bash
-   cd frontend
-   npm install
-   npm start
-   ```
+User Management: Control user roles and permissions
 
-## 🌐 Live Deployment
+System Config: Manage platform settings securely
 
-### 🚀 **Deploy Your Own Instance**
+⚡ Quick Start
+Prerequisites
+Node.js (v14+)
 
-Want to host your own version? Follow our comprehensive deployment guide:
+npm (v6+)
 
-**[📖 Complete Deployment Guide](DEPLOYMENT_GUIDE.md)**
+One-Command Setup
 
-### 🎯 **Quick Deployment**
+git clone <repository-url>
+cd sundevil-cafeteria
+./start.sh
+This will install dependencies, launch the backend on port 5001, and start the frontend on port 3000.
 
-1. **Prepare for deployment:**
-   ```bash
-   ./deploy.sh
-   ```
 
-2. **Deploy Backend to Render:**
-   - Go to [Render.com](https://render.com)
-   - Connect your GitHub repository
-   - Deploy as a Web Service
 
-3. **Deploy Frontend to Netlify:**
-   - Go to [Netlify.com](https://netlify.com)
-   - Connect your GitHub repository
-   - Set base directory to `frontend`
 
-### 🔗 **Deployment Services Used**
+🔐 User Roles
+Role	Username	Password	Access
+Customer	customer	CustomerPass123	Browse, place, and track orders
+Kitchen Staff	worker	Kitchen456	Manage orders, update statuses
+Manager	manager	Admin789	View analytics, manage users
+Admin	admin	Admin789	Full access to all system features
 
-- **Frontend Hosting**: Netlify (Free tier)
-- **Backend Hosting**: Render (Free tier)
-- **Database**: SQLite (included) or PostgreSQL (Render)
-
-### 📱 **Mobile Ready**
-
-The deployed application is fully responsive and works perfectly on:
-- 📱 Mobile phones
-- 📱 Tablets
-- 💻 Desktop computers
-
-## 👥 User Roles & Access
-
-### Customer (Default)
-- Username: `customer`
-- Password: `CustomerPass123`
-- Access: Menu browsing, order placement, order tracking
-
-### Kitchen Worker
-- Username: `worker`
-- Password: `Kitchen456`
-- Access: Order management, status updates
-
-### Manager
-- Username: `manager`
-- Password: `Admin789`
-- Access: Analytics, user management, system administration
-
-### Admin
-- Username: `admin`
-- Password: `Admin789`
-- Access: Full system access
-
-## 🏗️ Project Structure
-
-```
+📁 Project Structure
+bash
+Copy
+Edit
 sundevil-cafeteria/
-├── frontend/                 # React frontend application
-│   ├── src/
-│   │   ├── components/      # Reusable UI components
-│   │   ├── pages/          # Main application pages
-│   │   ├── services/       # API service layer
-│   │   ├── styles/         # CSS styling files
-│   │   └── App.js          # Main application component
-│   ├── public/             # Static assets
-│   └── package.json        # Frontend dependencies
-├── backend/                 # Node.js backend application
-│   ├── controllers/        # Request handlers
-│   ├── models/            # Data models
-│   ├── routes/            # API route definitions
-│   ├── server.js          # Main server file
-│   └── package.json       # Backend dependencies
-├── database/               # Database files
-│   └── cafeteria.db       # SQLite database
-├── docs/                   # Architecture documentation
-│   ├── c4-context-diagram.md
-│   ├── c4-component-diagram.md
-│   └── c4-deployment-diagram.md
-├── ARCHITECTURE_SUBMISSION.md  # Architecture explanation
-├── README.md              # This file
-└── start.sh               # Startup script
-```
+├── frontend/        # React SPA
+├── backend/         # Node.js + Express API
+├── database/        # SQLite DB for dev
+├── docs/            # Architecture Diagrams
+├── start.sh         # One-click startup script
+└── README.md        # You're reading it!
+📡 API Overview
+GET /api/menu — Fetch all menu items
 
-## 🔧 API Endpoints
+POST /api/orders — Place a new order
 
-### Menu Management
-- `GET /api/menu` - Get all menu items
-- `GET /api/menu/categories` - Get menu categories
+PUT /api/orders/:id/status — Update order status
 
-### Order Management
-- `GET /api/orders` - Get all orders
-- `POST /api/orders` - Create new order
-- `PUT /api/orders/:id/status` - Update order status
-- `GET /api/orders/:id` - Get specific order
+POST /api/auth/login — Log in as a user
 
-### User Management
-- `POST /api/auth/login` - User authentication
-- `GET /api/users` - Get all users (admin only)
+🧱 Database Schema
+MenuItems: ID, name, description, price, category, availability
 
-## 🎨 UI/UX Features
+Orders: ID, customer, total, status, timestamps
 
-- **Modern Design**: Clean, professional interface with ASU branding
-- **Responsive Layout**: Optimized for mobile, tablet, and desktop
-- **Real-time Updates**: Live order tracking and status updates
-- **Intuitive Navigation**: Easy-to-use interface for all user roles
-- **Visual Feedback**: Loading states, success notifications, and error handling
-- **Accessibility**: WCAG compliant design principles
+OrderItems: Item ID, order ID, quantity, price
 
-## 🛠️ Technology Stack
+Users: ID, username, password (encrypted), role, created_at
 
-### Frontend
-- **React.js**: Modern UI framework
-- **React Router**: Client-side routing
-- **React Context**: State management
-- **CSS3**: Styling with responsive design
-- **HTML5**: Semantic markup
 
-### Backend
-- **Node.js**: JavaScript runtime
-- **Express.js**: Web framework
-- **SQLite**: Database (development)
-- **JWT**: Authentication
-- **CORS**: Cross-origin resource sharing
 
-### Development Tools
-- **npm**: Package management
-- **ESLint**: Code linting
-- **Git**: Version control
 
-## 📊 Database Schema
+🛠️ Technology Stack
+Layer	Technologies Used
+Frontend	React.js, Context API, CSS3
+Backend	Node.js, Express.js, JWT
+Database	SQLite / PostgreSQL
+Tools	npm, ESLint, Git
 
-### Menu Items
-- Item ID, Name, Description, Price, Category, Availability
+🧑‍💻 Author
+Abdullah Alqallaf
+Computer Engineering Student, Arizona State University
+📧 aalqallaf@asu.edu
+📍 Tempe, AZ
 
-### Orders
-- Order ID, Customer, Total, Status, Timestamp, Updated At
+📄 License
+This project was created for academic purposes as part of the CSE 460 course at ASU. Not intended for commercial deployment.
 
-### Order Items
-- Order Item ID, Order ID, Menu Item ID, Quantity, Price
-
-### Users
-- User ID, Username, Role, Password, Created At
-
-## 🔒 Security Features
-
-- **JWT Authentication**: Secure user sessions
-- **Role-based Access Control**: Different permissions for different user types
-- **Input Validation**: Server-side data validation
-- **CORS Protection**: Secure cross-origin requests
-- **Password Encryption**: Secure password storage
-
-## 🚀 Deployment
-
-### Development
-- Frontend: React development server (port 3000)
-- Backend: Node.js development server (port 5001)
-- Database: SQLite file-based database
-
-### Production
-- Frontend: Static file hosting (CDN recommended)
-- Backend: Node.js application servers with load balancing
-- Database: PostgreSQL with replication
-- Monitoring: ELK stack for logging, Prometheus for metrics
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📝 License
-
-This project is developed for educational purposes as part of CSE 460 - Software Architecture at Arizona State University.
-
-## 👨‍💻 Development Team
-
-- **Course**: CSE 460 - Software Architecture
-- **Institution**: Arizona State University
-- **Project**: Phase III - Part 1: Software Architecture Identification and Initial Implementation
-
----
-
-**Note**: This is a demonstration project for educational purposes. For production use, additional security measures, error handling, and testing would be required. 
