@@ -1,3 +1,6 @@
+// API Configuration
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://sundevil-cafeteria-backend.onrender.com';
+
 // Mock data for frontend-only operation
 const mockMenuCategories = [
   {
@@ -382,26 +385,63 @@ const saveOrders = () => {
 // Simulate API delays
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Mock API functions
+// Helper function to make API calls with fallback to mock data
+const apiCall = async (endpoint, options = {}) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+      },
+      ...options
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.warn(`API call failed for ${endpoint}, using mock data:`, error.message);
+    return null;
+  }
+};
+
+// API functions with real backend fallback to mock data
 export const api = {
   // Menu API
   async getMenuCategories() {
+    const result = await apiCall('/api/menu/categories');
+    if (result) return result;
+    
     await delay(300);
     return mockMenuCategories;
   },
 
   async getMenuItems() {
+    const result = await apiCall('/api/menu/items');
+    if (result) return result;
+    
     await delay(300);
     return mockMenuItems;
   },
 
   async getMenuItemsByCategory(category) {
+    const result = await apiCall(`/api/menu/items?category=${encodeURIComponent(category)}`);
+    if (result) return result;
+    
     await delay(300);
     return mockMenuItems.filter(item => item.category === category);
   },
 
   // Orders API
   async createOrder(orderData) {
+    const result = await apiCall('/api/orders', {
+      method: 'POST',
+      body: JSON.stringify(orderData)
+    });
+    if (result) return result;
+    
     await delay(500);
     const newOrder = {
       id: Math.max(...mockOrders.map(o => o.id), 0) + 1,
@@ -417,11 +457,17 @@ export const api = {
   },
 
   async getOrders() {
+    const result = await apiCall('/api/orders');
+    if (result) return result;
+    
     await delay(300);
     return mockOrders;
   },
 
   async getOrdersByCustomer(customerName) {
+    const result = await apiCall(`/api/orders?customer=${encodeURIComponent(customerName)}`);
+    if (result) return result;
+    
     await delay(300);
     return mockOrders.filter(order => 
       order.customerName.toLowerCase() === customerName.toLowerCase()
@@ -429,6 +475,12 @@ export const api = {
   },
 
   async updateOrderStatus(orderId, status) {
+    const result = await apiCall(`/api/orders/${orderId}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status })
+    });
+    if (result) return result;
+    
     await delay(300);
     const order = mockOrders.find(o => o.id === orderId);
     if (order) {
@@ -441,6 +493,9 @@ export const api = {
 
   // Admin API
   async getDashboardStats() {
+    const result = await apiCall('/api/admin/dashboard');
+    if (result) return result;
+    
     await delay(300);
     const totalOrders = mockOrders.length;
     const pendingOrders = mockOrders.filter(o => o.status === "pending").length;

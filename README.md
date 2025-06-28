@@ -78,6 +78,44 @@ If you prefer to run the services separately:
    npm start
    ```
 
+## 🌐 Live Deployment
+
+### 🚀 **Deploy Your Own Instance**
+
+Want to host your own version? Follow our comprehensive deployment guide:
+
+**[📖 Complete Deployment Guide](DEPLOYMENT_GUIDE.md)**
+
+### 🎯 **Quick Deployment**
+
+1. **Prepare for deployment:**
+   ```bash
+   ./deploy.sh
+   ```
+
+2. **Deploy Backend to Render:**
+   - Go to [Render.com](https://render.com)
+   - Connect your GitHub repository
+   - Deploy as a Web Service
+
+3. **Deploy Frontend to Netlify:**
+   - Go to [Netlify.com](https://netlify.com)
+   - Connect your GitHub repository
+   - Set base directory to `frontend`
+
+### 🔗 **Deployment Services Used**
+
+- **Frontend Hosting**: Netlify (Free tier)
+- **Backend Hosting**: Render (Free tier)
+- **Database**: SQLite (included) or PostgreSQL (Render)
+
+### 📱 **Mobile Ready**
+
+The deployed application is fully responsive and works perfectly on:
+- 📱 Mobile phones
+- 📱 Tablets
+- 💻 Desktop computers
+
 ## 👥 User Roles & Access
 
 ### Customer (Default)

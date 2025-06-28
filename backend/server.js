@@ -10,11 +10,16 @@ const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
-// Hardcode port to 5001
-const PORT = 5001;
+// Use environment variable for port or default to 5001
+const PORT = process.env.PORT || 5001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://sundevil-cafeteria.netlify.app', 'https://your-frontend-domain.netlify.app']
+    : 'http://localhost:3000',
+  credentials: true
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -37,12 +42,18 @@ if (process.env.NODE_ENV === 'production') {
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Sundevil Cafeteria API is running' });
+  res.json({ 
+    status: 'OK', 
+    message: 'Sundevil Cafeteria API is running',
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  });
 });
 
 app.listen(PORT, () => {
   console.log(`🚀 Sundevil Cafeteria Server running on port ${PORT}`);
   console.log(`📊 API Documentation: http://localhost:${PORT}/api/health`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 module.exports = app; 
