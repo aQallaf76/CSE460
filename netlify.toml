@@ -1,6 +1,6 @@
 [build]
   publish = "frontend/build"
-  command = "./build.sh"
+  command = "cd frontend && npm install && npm run build"
 
 [build.environment]
   REACT_APP_API_URL = "https://sundevil-cafeteria-backend.onrender.com"
