@@ -3,6 +3,9 @@ Welcome to the Sundevil Cafeteria Online Ordering System — a modern, full-stac
 
 This project was designed and developed individually by Abdullah Alqallaf as part of the CSE 460 - Software Architecture course at Arizona State University.
 
+Test the live webapp: https://sundevil-cafeteria-frontend.netlify.app
+
+
 🧱 Architecture Overview
 This system is built using a Layered MVC Architecture, which allows for clean separation between the frontend, backend, and database layers.
 
@@ -15,6 +18,7 @@ Database: SQLite (for development), PostgreSQL (for production)
 State Management: React Context API
 
 Styling: CSS3 with responsive design principles
+
 
 ✨ Key Features
 👤 Customer Experience
