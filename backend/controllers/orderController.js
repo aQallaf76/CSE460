@@ -1,4 +1,5 @@
 const db = require('../models/database');
+const firebaseDb = require('../firebase');
 
 class OrderController {
   // Create new order
@@ -46,6 +47,14 @@ class OrderController {
         }))
       };
 
+      // Save order to Firebase Firestore
+      try {
+        await firebaseDb.collection('orders').add(createdOrder);
+      } catch (firebaseError) {
+        console.error('Error saving order to Firebase:', firebaseError);
+        // Optionally, you can return a warning but not fail the whole request
+      }
+
       res.status(201).json(createdOrder);
     } catch (error) {
       console.error('Error creating order:', error);
@@ -56,38 +65,16 @@ class OrderController {
   // Get all orders
   async getAllOrders(req, res) {
     try {
-      // Get all orders
-      const ordersSql = 'SELECT * FROM orders ORDER BY created_at DESC';
-      const orders = await db.query(ordersSql);
-      
-      // Get items for each order
-      const ordersWithItems = await Promise.all(orders.map(async (order) => {
-        const itemsSql = `
-          SELECT oi.quantity, oi.price, mi.name
-          FROM order_items oi
-          JOIN menu_items mi ON oi.menu_item_id = mi.id
-          WHERE oi.order_id = ?
-        `;
-        const items = await db.query(itemsSql, [order.id]);
-        
-        return {
-          id: order.id,
-          customerName: order.customer_name,
-          total: order.total_amount,
-          status: order.status,
-          timestamp: order.created_at,
-          items: items.map(item => ({
-            name: item.name,
-            quantity: item.quantity,
-            price: item.price
-          }))
-        };
+      // Fetch all orders from Firestore
+      const snapshot = await firebaseDb.collection('orders').orderBy('timestamp', 'desc').get();
+      const ordersWithItems = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
       }));
-      
       res.json(ordersWithItems);
     } catch (error) {
-      console.error('Error fetching orders:', error);
-      res.status(500).json({ error: 'Failed to fetch orders' });
+      console.error('Error fetching orders from Firestore:', error);
+      res.status(500).json({ error: 'Failed to fetch orders from Firestore' });
     }
   }
 
@@ -95,30 +82,14 @@ class OrderController {
   async getOrderById(req, res) {
     try {
       const { id } = req.params;
-      
-      // Get order details
-      const orderSql = 'SELECT * FROM orders WHERE id = ?';
-      const orders = await db.query(orderSql, [id]);
-      
-      if (orders.length === 0) {
+      // Fetch order from Firestore
+      const doc = await firebaseDb.collection('orders').doc(id).get();
+      if (!doc.exists) {
         return res.status(404).json({ error: 'Order not found' });
       }
-
-      // Get order items
-      const itemsSql = `
-        SELECT oi.*, mi.name, mi.description
-        FROM order_items oi
-        JOIN menu_items mi ON oi.menu_item_id = mi.id
-        WHERE oi.order_id = ?
-      `;
-      const items = await db.query(itemsSql, [id]);
-
-      const order = orders[0];
-      order.items = items;
-
-      res.json(order);
+      res.json({ id: doc.id, ...doc.data() });
     } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch order' });
+      res.status(500).json({ error: 'Failed to fetch order from Firestore' });
     }
   }
 
@@ -150,74 +121,32 @@ class OrderController {
   async getOrdersByStatus(req, res) {
     try {
       const { status } = req.params;
-      const ordersSql = 'SELECT * FROM orders WHERE status = ? ORDER BY created_at DESC';
-      const orders = await db.query(ordersSql, [status]);
-      
-      // Get items for each order
-      const ordersWithItems = await Promise.all(orders.map(async (order) => {
-        const itemsSql = `
-          SELECT oi.quantity, oi.price, mi.name
-          FROM order_items oi
-          JOIN menu_items mi ON oi.menu_item_id = mi.id
-          WHERE oi.order_id = ?
-        `;
-        const items = await db.query(itemsSql, [order.id]);
-        
-        return {
-          id: order.id,
-          customerName: order.customer_name,
-          total: order.total_amount,
-          status: order.status,
-          timestamp: order.created_at,
-          items: items.map(item => ({
-            name: item.name,
-            quantity: item.quantity,
-            price: item.price
-          }))
-        };
+      // Fetch orders by status from Firestore
+      const snapshot = await firebaseDb.collection('orders').where('status', '==', status).orderBy('timestamp', 'desc').get();
+      const ordersWithItems = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
       }));
-      
       res.json(ordersWithItems);
     } catch (error) {
-      console.error('Error fetching orders by status:', error);
-      res.status(500).json({ error: 'Failed to fetch orders by status' });
+      console.error('Error fetching orders by status from Firestore:', error);
+      res.status(500).json({ error: 'Failed to fetch orders by status from Firestore' });
     }
   }
 
   // Get pending orders (for kitchen staff)
   async getPendingOrders(req, res) {
     try {
-      const ordersSql = 'SELECT * FROM orders WHERE status IN ("pending", "preparing") ORDER BY created_at ASC';
-      const orders = await db.query(ordersSql);
-      
-      // Get items for each order
-      const ordersWithItems = await Promise.all(orders.map(async (order) => {
-        const itemsSql = `
-          SELECT oi.quantity, oi.price, mi.name
-          FROM order_items oi
-          JOIN menu_items mi ON oi.menu_item_id = mi.id
-          WHERE oi.order_id = ?
-        `;
-        const items = await db.query(itemsSql, [order.id]);
-        
-        return {
-          id: order.id,
-          customerName: order.customer_name,
-          total: order.total_amount,
-          status: order.status,
-          timestamp: order.created_at,
-          items: items.map(item => ({
-            name: item.name,
-            quantity: item.quantity,
-            price: item.price
-          }))
-        };
+      // Fetch pending/preparing orders from Firestore
+      const snapshot = await firebaseDb.collection('orders').where('status', 'in', ['pending', 'preparing']).orderBy('timestamp', 'asc').get();
+      const ordersWithItems = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
       }));
-      
       res.json(ordersWithItems);
     } catch (error) {
-      console.error('Error fetching pending orders:', error);
-      res.status(500).json({ error: 'Failed to fetch pending orders' });
+      console.error('Error fetching pending orders from Firestore:', error);
+      res.status(500).json({ error: 'Failed to fetch pending orders from Firestore' });
     }
   }
 
