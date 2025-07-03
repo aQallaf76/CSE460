@@ -1,4 +1,5 @@
 // API Configuration
+// Set REACT_APP_API_URL in your .env file or Netlify environment variables to override the default backend URL
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://sundevil-cafeteria-backend.onrender.com';
 
 // Mock data for frontend-only operation
