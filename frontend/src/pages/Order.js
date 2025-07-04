@@ -84,7 +84,6 @@ const Order = () => {
       setError(null);
       
       // Show success notification
-      showOrderSuccessNotification(orderData.customerName);
       showToast('Order submitted successfully!', 'success');
     } catch (err) {
       setError('Failed to submit order. Please try again.');
@@ -96,32 +95,8 @@ const Order = () => {
   };
 
   const showOrderSuccessNotification = (customerName) => {
-    const notification = document.createElement('div');
-    notification.className = 'order-success-notification';
-    notification.innerHTML = `
-      <div class="notification-content">
-        <div class="notification-icon">🎉</div>
-        <div class="notification-text">
-          <h4>Order Submitted Successfully!</h4>
-          <p>Thank you ${customerName}! Your order has been received.</p>
-          <button id="track-order-btn" class="track-order-btn">
-            📋 Track Your Order
-          </button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(notification);
-    
-    // Add event listener for the track order button
-    const trackBtn = notification.querySelector('#track-order-btn');
-    trackBtn.addEventListener('click', () => {
-      navigate('/tracking');
-      notification.remove();
-    });
-    
-    setTimeout(() => {
-      notification.remove();
-    }, 8000);
+    // Remove the manual DOM notification - keep only the toast
+    // The toast is already shown in handleSubmitOrder
   };
 
   if (loading) {
@@ -146,7 +121,7 @@ const Order = () => {
             <button onClick={() => setOrderSuccess(false)} className="btn-primary">
               Place Another Order
             </button>
-            <button onClick={() => window.location.href = '/menu'} className="btn-secondary">
+            <button onClick={() => navigate('/menu')} className="btn-secondary">
               View Menu
             </button>
           </div>
