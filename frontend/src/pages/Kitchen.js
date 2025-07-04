@@ -17,7 +17,7 @@ const Kitchen = () => {
   const loadOrders = async () => {
     try {
       setLoading(true);
-      const ordersData = await api.getPendingOrders();
+      const ordersData = await api.getOrders();
       setOrders(ordersData);
       setError(null);
     } catch (err) {
@@ -123,15 +123,14 @@ const Kitchen = () => {
       </div>
 
       <div className="orders-section">
-        <h2>Active Orders</h2>
-        
+        <h2>All Orders</h2>
         {orders.length === 0 ? (
           <div className="no-orders">
             <p>No orders at the moment.</p>
           </div>
         ) : (
           <div className="orders-grid">
-            {orders.filter(order => typeof order.id === 'string' && order.id.length > 8).map(order => (
+            {orders.map(order => (
               <div key={order.id} className={`order-card ${getStatusColor(order.status)}`}>
                 <div className="order-header">
                   <h3>Order #{order.id}</h3>
@@ -139,12 +138,10 @@ const Kitchen = () => {
                     {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                   </span>
                 </div>
-                
                 <div className="customer-info">
                   <p><strong>Customer:</strong> {order.customerName}</p>
                   <p><strong>Time:</strong> {formatRelativeTime(order.timestamp)}</p>
                 </div>
-
                 <div className="order-items">
                   <h4>Items:</h4>
                   {order.items.map((item, index) => (
@@ -155,12 +152,10 @@ const Kitchen = () => {
                     </div>
                   ))}
                 </div>
-
                 <div className="order-footer">
                   <div className="order-total">
                     <strong>Total: ${order.total}</strong>
                   </div>
-                  
                   {order.status !== 'completed' && (
                     <button
                       onClick={() => updateOrderStatus(order.id, getNextStatus(order.status))}
