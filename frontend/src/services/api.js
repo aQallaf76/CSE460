@@ -404,6 +404,10 @@ const apiCall = async (endpoint, options = {}) => {
     return await response.json();
   } catch (error) {
     console.warn(`API call failed for ${endpoint}, using mock data:`, error.message);
+    // Only use mock data for read operations, not for creating orders
+    if (options.method === 'POST' && endpoint.includes('/orders')) {
+      throw error; // Don't fall back to mock for order creation
+    }
     return null;
   }
 };
@@ -437,12 +441,17 @@ export const api = {
 
   // Orders API
   async createOrder(orderData) {
-    const result = await apiCall('/api/orders', {
-      method: 'POST',
-      body: JSON.stringify(orderData)
-    });
-    if (result) return result;
+    try {
+      const result = await apiCall('/api/orders', {
+        method: 'POST',
+        body: JSON.stringify(orderData)
+      });
+      if (result) return result;
+    } catch (error) {
+      console.error('Failed to create order on backend, using mock data:', error);
+    }
     
+    // Only use mock data if backend completely fails
     await delay(500);
     const newOrder = {
       id: Math.max(...mockOrders.map(o => o.id), 0) + 1,
