@@ -16,9 +16,11 @@ const PORT = process.env.PORT || 5001;
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://sundevil-cafeteria.netlify.app', 'https://your-frontend-domain.netlify.app']
+    ? ['https://sundevil-cafeteria-frontend.netlify.app', 'https://sundevil-cafeteria.netlify.app']
     : 'http://localhost:3000',
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
