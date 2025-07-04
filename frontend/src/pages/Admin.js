@@ -6,7 +6,6 @@ const Admin = () => {
   const [stats, setStats] = useState({});
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -33,39 +32,10 @@ const Admin = () => {
       setOrders(ordersData);
       setMenuItems(menuData);
       setCategories(categoriesData);
-      setError(null);
     } catch (err) {
-      setError('Failed to load dashboard data');
       console.error('Error loading dashboard data:', err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const formatTime = (timestamp) => {
-    return new Date(timestamp).toLocaleString();
-  };
-
-  const formatRelativeTime = (timestamp) => {
-    const now = new Date();
-    const orderTime = new Date(timestamp);
-    const diffMs = now - orderTime;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
-    if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
-    return formatTime(timestamp);
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'pending': return 'status-pending';
-      case 'preparing': return 'status-preparing';
-      case 'ready': return 'status-ready';
-      case 'completed': return 'status-completed';
-      default: return 'status-pending';
     }
   };
 
