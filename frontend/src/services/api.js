@@ -388,8 +388,11 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Helper function to make API calls with fallback to mock data
 const apiCall = async (endpoint, options = {}) => {
+  const fullUrl = `${API_BASE_URL}${endpoint}`;
+  console.log(`Making API call to: ${fullUrl}`, options);
+  
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(fullUrl, {
       headers: {
         'Content-Type': 'application/json',
         ...options.headers
@@ -397,11 +400,15 @@ const apiCall = async (endpoint, options = {}) => {
       ...options
     });
     
+    console.log(`API response status: ${response.status}`);
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log(`API call successful:`, data);
+    return data;
   } catch (error) {
     console.warn(`API call failed for ${endpoint}, using mock data:`, error.message);
     // Only use mock data for read operations, not for creating orders
@@ -441,17 +448,23 @@ export const api = {
 
   // Orders API
   async createOrder(orderData) {
+    console.log('Creating order with data:', orderData);
+    
     try {
       const result = await apiCall('/api/orders', {
         method: 'POST',
         body: JSON.stringify(orderData)
       });
-      if (result) return result;
+      if (result) {
+        console.log('Order created successfully on backend:', result);
+        return result;
+      }
     } catch (error) {
       console.error('Failed to create order on backend, using mock data:', error);
     }
     
     // Only use mock data if backend completely fails
+    console.log('Using mock data for order creation');
     await delay(500);
     const newOrder = {
       id: Math.max(...mockOrders.map(o => o.id), 0) + 1,
@@ -463,6 +476,7 @@ export const api = {
     };
     mockOrders.push(newOrder);
     saveOrders();
+    console.log('Order created with mock data:', newOrder);
     return newOrder;
   },
 
