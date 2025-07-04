@@ -33,16 +33,6 @@ const OrderTracking = () => {
     }
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'pending': return '⏳';
-      case 'preparing': return '👨‍🍳';
-      case 'ready': return '✅';
-      case 'completed': return '🎉';
-      default: return '❓';
-    }
-  };
-
   const getStatusColor = (status) => {
     switch (status) {
       case 'pending': return 'status-pending';

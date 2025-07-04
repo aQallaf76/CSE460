@@ -43,49 +43,8 @@ const Kitchen = () => {
     }
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'pending': return 'status-pending';
-      case 'preparing': return 'status-preparing';
-      case 'ready': return 'status-ready';
-      case 'completed': return 'status-completed';
-      default: return 'status-pending';
-    }
-  };
-
-  const getNextStatus = (currentStatus) => {
-    switch (currentStatus) {
-      case 'pending': return 'preparing';
-      case 'preparing': return 'ready';
-      case 'ready': return 'completed';
-      default: return currentStatus;
-    }
-  };
-
-  const getStatusButtonText = (currentStatus) => {
-    switch (currentStatus) {
-      case 'pending': return 'Start Preparing';
-      case 'preparing': return 'Mark as Ready';
-      case 'ready': return 'Mark as Completed';
-      default: return 'Update Status';
-    }
-  };
-
   const formatTime = (timestamp) => {
     return new Date(timestamp).toLocaleTimeString();
-  };
-
-  const formatRelativeTime = (timestamp) => {
-    const now = new Date();
-    const orderTime = new Date(timestamp);
-    const diffMs = now - orderTime;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
-    if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
-    return formatTime(timestamp);
   };
 
   // Sort orders by timestamp descending

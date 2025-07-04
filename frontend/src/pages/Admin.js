@@ -130,16 +130,6 @@ const Admin = () => {
 
 // Dashboard Tab Component
 const DashboardTab = ({ stats, orders }) => {
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'pending': return 'status-pending';
-      case 'preparing': return 'status-preparing';
-      case 'ready': return 'status-ready';
-      case 'completed': return 'status-completed';
-      default: return 'status-pending';
-    }
-  };
-
   const formatRelativeTime = (timestamp) => {
     const now = new Date();
     const orderTime = new Date(timestamp);
