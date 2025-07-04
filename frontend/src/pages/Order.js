@@ -67,11 +67,9 @@ const Order = () => {
     try {
       const orderData = {
         items: cart.map(item => ({
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price
+          menuItemId: item.id,
+          quantity: item.quantity
         })),
-        total: getTotalPrice(),
         customerName: customerName.trim()
       };
 
