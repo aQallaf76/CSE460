@@ -40,10 +40,13 @@ class OrderController {
         total: totalAmount,
         status: 'pending',
         timestamp: new Date().toISOString(),
-        items: items.map(item => ({
-          name: item.name || `Item ${item.menuItemId}`,
-          quantity: item.quantity,
-          price: item.price || 0
+        items: await Promise.all(items.map(async (item) => {
+          const menuItem = await db.query('SELECT name, price FROM menu_items WHERE id = ?', [item.menuItemId]);
+          return {
+            name: menuItem[0]?.name || `Item ${item.menuItemId}`,
+            quantity: item.quantity,
+            price: menuItem[0]?.price || 0
+          };
         }))
       };
 
