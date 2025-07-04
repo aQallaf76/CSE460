@@ -44,6 +44,20 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Debug endpoint to check database
+app.get('/api/debug/menu-count', async (req, res) => {
+  try {
+    const db = require('./models/database');
+    const result = await db.query('SELECT COUNT(*) as count FROM menu_items');
+    res.json({ 
+      menuItemCount: result[0].count,
+      message: `Database has ${result[0].count} menu items`
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Database error', details: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Sundevil Cafeteria Server running on port ${PORT}`);
   console.log(`📊 API Documentation: http://localhost:${PORT}/api/health`);
