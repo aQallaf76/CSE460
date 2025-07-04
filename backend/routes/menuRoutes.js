@@ -5,6 +5,9 @@ const menuController = require('../controllers/menuController');
 // GET /api/menu - Get all menu items
 router.get('/', menuController.getAllMenuItems);
 
+// GET /api/menu/items - Get all menu items (alternative endpoint)
+router.get('/items', menuController.getAllMenuItems);
+
 // GET /api/menu/categories - Get all categories
 router.get('/categories', menuController.getCategories);
 
