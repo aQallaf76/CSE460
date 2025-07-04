@@ -170,31 +170,25 @@ const Menu = () => {
       <div className="menu-grid">
         {displayItems.map(item => (
           <div key={item.id} className="menu-item">
-            <div className="item-image">
+            <div className="item-header">
               <span className="item-emoji">{item.image}</span>
-              {!item.available && <div className="unavailable-overlay">Unavailable</div>}
-            </div>
-            <div className="item-info">
               <h3 className="item-name">{item.name}</h3>
-              <p className="item-description">{item.description}</p>
-              <div className="item-footer">
-                <span className="item-price">${item.price.toFixed(2)}</span>
-                <div className="item-actions">
-                  <span className={`item-status ${item.available ? 'available' : 'unavailable'}`}>
-                    {item.available ? '✅ Available' : '❌ Unavailable'}
-                  </span>
-                  {item.available && (
-                    <button 
-                      className="quick-add-btn"
-                      onClick={() => handleQuickAdd(item)}
-                      title="Add to cart"
-                    >
-                      ➕
-                    </button>
-                  )}
-                </div>
-              </div>
             </div>
+            <p className="item-description">{item.description}</p>
+            <div className="item-footer-row">
+              <span className="item-price">${item.price.toFixed(2)}</span>
+              <span className={`item-status ${item.available ? 'available' : 'unavailable'}`}>{item.available ? '✅ Available' : '❌ Unavailable'}</span>
+              {item.available && (
+                <button 
+                  className="quick-add-btn"
+                  onClick={() => handleQuickAdd(item)}
+                  title="Add to cart"
+                >
+                  ➕
+                </button>
+              )}
+            </div>
+            {!item.available && <div className="unavailable-overlay">Unavailable</div>}
           </div>
         ))}
       </div>
