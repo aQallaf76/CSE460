@@ -107,12 +107,9 @@ const OrderTracking = () => {
             {orders.map(order => (
               <div key={order.id} className={`order-card ${getStatusColor(order.status)}`}>
                 <div className="order-header">
-                  <h3>Order #{order.id}</h3>
-                  <div className="status-badge">
-                    <StatusBadge status={order.status} />
-                  </div>
+                  <span className="order-emoji">📝</span>
+                  <h3 className="order-name">Order #{order.id}</h3>
                 </div>
-
                 <div className="order-details">
                   <p className="order-time">
                     <strong>Ordered:</strong> {formatRelativeTime(order.timestamp)}
@@ -123,24 +120,20 @@ const OrderTracking = () => {
                     </p>
                   )}
                 </div>
-
                 <div className="order-items">
                   <h4>Items:</h4>
                   {order.items.map((item, index) => (
-                    <div key={index} className="order-item">
+                    <div key={index} className="order-item-row">
                       <span className="item-name">{item.name}</span>
                       <span className="item-quantity">x{item.quantity}</span>
                       <span className="item-price">${item.price.toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
-
-                <div className="order-footer">
-                  <div className="order-total">
-                    <strong>Total: ${order.total.toFixed(2)}</strong>
-                  </div>
+                <div className="order-footer-row">
+                  <span className="order-total"><strong>Total: ${order.total.toFixed(2)}</strong></span>
+                  <StatusBadge status={order.status} />
                 </div>
-
                 {/* Status Progress */}
                 <div className="status-progress">
                   <div className={`progress-step ${order.status === 'pending' || order.status === 'preparing' || order.status === 'ready' || order.status === 'completed' ? 'completed' : ''}`}>

@@ -385,7 +385,9 @@ const MenuManagementTab = ({
         <table>
           <thead>
             <tr>
+              <th></th>
               <th>Name</th>
+              <th>Description</th>
               <th>Category</th>
               <th>Price</th>
               <th>Available</th>
@@ -395,21 +397,13 @@ const MenuManagementTab = ({
           <tbody>
             {menuItems.map(item => (
               <tr key={item.id}>
-                <td>
-                  <div className="item-info">
-                    <span className="item-emoji">{item.image}</span>
-                    <div>
-                      <strong>{item.name}</strong>
-                      {item.description && <p className="item-desc">{item.description}</p>}
-                    </div>
-                  </div>
-                </td>
+                <td className="item-emoji-cell">{item.image}</td>
+                <td className="item-name-cell">{item.name}</td>
+                <td className="item-desc-cell">{item.description}</td>
                 <td>{item.category}</td>
-                <td>${item.price.toFixed(2)}</td>
+                <td className="item-price-cell">${item.price.toFixed(2)}</td>
                 <td>
-                  <span className={`availability ${item.available ? 'available' : 'unavailable'}`}>
-                    {item.available ? '✅ Available' : '❌ Unavailable'}
-                  </span>
+                  <span className={`availability ${item.available ? 'available' : 'unavailable'}`}>{item.available ? '✅ Available' : '❌ Unavailable'}</span>
                 </td>
                 <td>
                   <div className="action-buttons">

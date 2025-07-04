@@ -433,11 +433,10 @@
   margin-top: 20px;
 }
 
-.menu-items-table th,
-.menu-items-table td {
-  padding: 15px;
+.menu-items-table th, .menu-items-table td {
+  padding: 14px 18px;
   text-align: left;
-  border-bottom: 1px solid #e0e0e0;
+  vertical-align: middle;
 }
 
 .menu-items-table th {
@@ -452,15 +451,32 @@
   gap: 15px;
 }
 
-.item-emoji {
-  font-size: 2rem;
-  flex-shrink: 0;
+.item-emoji-cell {
+  text-align: center;
+  font-size: 1.7rem;
+  width: 48px;
 }
 
-.item-desc {
+.item-name-cell {
+  font-weight: 600;
+  font-size: 1.05rem;
+  white-space: nowrap;
+}
+
+.item-desc-cell {
   color: #666;
-  font-size: 0.9rem;
-  margin: 5px 0 0 0;
+  font-size: 0.95rem;
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-price-cell {
+  text-align: right;
+  font-weight: bold;
+  color: #8B0000;
+  min-width: 80px;
 }
 
 .availability {
@@ -482,7 +498,8 @@
 
 .action-buttons {
   display: flex;
-  gap: 10px;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
 .edit-btn,
