@@ -463,10 +463,12 @@ export const api = {
   async getMenuCategories() {
     const result = await apiCall('/api/menu/categories');
     if (result) {
-      // Clean up categories: capitalize and remove duplicates
+      // Clean up categories: capitalize and remove duplicates case-insensitively
       const cleanedCategories = result
         .map(cat => cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase())
-        .filter((cat, index, self) => self.indexOf(cat) === index);
+        .filter((cat, index, self) => 
+          index === self.findIndex(c => c.toLowerCase() === cat.toLowerCase())
+        );
       
       return cleanedCategories.map((category, index) => ({
         id: index + 1,
@@ -599,5 +601,55 @@ export const api = {
       preparingOrders,
       totalRevenue: totalRevenue.toFixed(2)
     };
+  },
+
+  // Menu Management API
+  async addMenuItem(itemData) {
+    const result = await apiCall('/api/menu', {
+      method: 'POST',
+      body: JSON.stringify(itemData)
+    });
+    if (result) return result;
+    
+    await delay(300);
+    const newItem = {
+      id: Math.max(...mockMenuItems.map(i => i.id), 0) + 1,
+      ...itemData,
+      image: getItemEmoji(itemData.name),
+      available: itemData.available ? 1 : 0
+    };
+    mockMenuItems.push(newItem);
+    return newItem;
+  },
+
+  async updateMenuItem(itemId, itemData) {
+    const result = await apiCall(`/api/menu/${itemId}`, {
+      method: 'PUT',
+      body: JSON.stringify(itemData)
+    });
+    if (result) return result;
+    
+    await delay(300);
+    const item = mockMenuItems.find(i => i.id === itemId);
+    if (item) {
+      Object.assign(item, itemData);
+      item.image = getItemEmoji(itemData.name);
+      item.available = itemData.available ? 1 : 0;
+    }
+    return item;
+  },
+
+  async deleteMenuItem(itemId) {
+    const result = await apiCall(`/api/menu/${itemId}`, {
+      method: 'DELETE'
+    });
+    if (result) return result;
+    
+    await delay(300);
+    const index = mockMenuItems.findIndex(i => i.id === itemId);
+    if (index !== -1) {
+      mockMenuItems.splice(index, 1);
+    }
+    return { success: true };
   }
 }; 
