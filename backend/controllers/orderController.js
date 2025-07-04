@@ -68,12 +68,23 @@ class OrderController {
   // Get all orders
   async getAllOrders(req, res) {
     try {
+      const { customer } = req.query;
+      
       // Fetch all orders from Firestore
       const snapshot = await firebaseDb.collection('orders').orderBy('timestamp', 'desc').get();
-      const ordersWithItems = snapshot.docs.map(doc => ({
+      let ordersWithItems = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+
+      // Filter by customer name if provided
+      if (customer) {
+        ordersWithItems = ordersWithItems.filter(order => 
+          order.customerName && 
+          order.customerName.toLowerCase().includes(customer.toLowerCase())
+        );
+      }
+
       res.json(ordersWithItems);
     } catch (error) {
       console.error('Error fetching orders from Firestore:', error);

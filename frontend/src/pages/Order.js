@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import '../styles/Order.css';
 import { useCart } from '../CartContext';
@@ -14,6 +15,7 @@ const Order = () => {
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { cart, addToCart, removeFromCart, updateQuantity, clearCart, getTotalPrice, getTotalItems } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadMenuData();
@@ -98,13 +100,20 @@ const Order = () => {
         <div class="notification-text">
           <h4>Order Submitted Successfully!</h4>
           <p>Thank you ${customerName}! Your order has been received.</p>
-          <button onclick="window.location.href='/tracking'" class="track-order-btn">
+          <button id="track-order-btn" class="track-order-btn">
             📋 Track Your Order
           </button>
         </div>
       </div>
     `;
     document.body.appendChild(notification);
+    
+    // Add event listener for the track order button
+    const trackBtn = notification.querySelector('#track-order-btn');
+    trackBtn.addEventListener('click', () => {
+      navigate('/tracking');
+      notification.remove();
+    });
     
     setTimeout(() => {
       notification.remove();
