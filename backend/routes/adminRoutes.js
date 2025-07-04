@@ -1,46 +1,64 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models/database');
+const firebaseDb = require('../firebase');
 
 // GET /api/admin/dashboard - Get dashboard statistics
 router.get('/dashboard', async (req, res) => {
   try {
-    // Get total orders
-    const totalOrders = await db.query('SELECT COUNT(*) as count FROM orders');
-    
-    // Get orders by status
-    const ordersByStatus = await db.query(`
-      SELECT status, COUNT(*) as count 
-      FROM orders 
-      GROUP BY status
-    `);
-    
-    // Get total revenue
-    const totalRevenue = await db.query(`
-      SELECT SUM(total_amount) as total 
-      FROM orders 
-      WHERE status != 'cancelled'
-    `);
-    
-    // Get top selling items
-    const topItems = await db.query(`
-      SELECT mi.name, SUM(oi.quantity) as total_quantity
-      FROM order_items oi
-      JOIN menu_items mi ON oi.menu_item_id = mi.id
-      JOIN orders o ON oi.order_id = o.id
-      WHERE o.status != 'cancelled'
-      GROUP BY mi.id, mi.name
-      ORDER BY total_quantity DESC
-      LIMIT 5
-    `);
+    // Get all orders from Firestore
+    const snapshot = await firebaseDb.collection('orders').get();
+    const orders = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    // Calculate stats from Firestore orders
+    const totalOrders = orders.length;
+    const ordersByStatus = {};
+    let totalRevenue = 0;
+
+    orders.forEach(order => {
+      // Count by status
+      const status = order.status || 'pending';
+      ordersByStatus[status] = (ordersByStatus[status] || 0) + 1;
+      
+      // Calculate revenue (exclude cancelled orders)
+      if (status !== 'cancelled') {
+        totalRevenue += order.total || 0;
+      }
+    });
+
+    // Convert ordersByStatus to array format for consistency
+    const ordersByStatusArray = Object.entries(ordersByStatus).map(([status, count]) => ({
+      status,
+      count
+    }));
+
+    // Get top selling items from Firestore orders
+    const itemCounts = {};
+    orders.forEach(order => {
+      if (order.status !== 'cancelled' && order.items) {
+        order.items.forEach(item => {
+          const itemName = item.name || 'Unknown Item';
+          itemCounts[itemName] = (itemCounts[itemName] || 0) + item.quantity;
+        });
+      }
+    });
+
+    const topItems = Object.entries(itemCounts)
+      .map(([name, total_quantity]) => ({ name, total_quantity }))
+      .sort((a, b) => b.total_quantity - a.total_quantity)
+      .slice(0, 5);
 
     res.json({
-      totalOrders: totalOrders[0].count,
-      ordersByStatus,
-      totalRevenue: totalRevenue[0].total || 0,
+      totalOrders,
+      ordersByStatus: ordersByStatusArray,
+      totalRevenue: totalRevenue.toFixed(2),
       topItems
     });
   } catch (error) {
+    console.error('Error fetching dashboard data from Firestore:', error);
     res.status(500).json({ error: 'Failed to fetch dashboard data' });
   }
 });

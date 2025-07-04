@@ -169,6 +169,33 @@ class OrderController {
       res.status(500).json({ error: 'Failed to cancel order' });
     }
   }
+
+  // Get dashboard statistics
+  async getDashboardStats(req, res) {
+    try {
+      // Get all orders from Firestore
+      const snapshot = await firebaseDb.collection('orders').get();
+      const orders = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      const totalOrders = orders.length;
+      const pendingOrders = orders.filter(o => o.status === "pending").length;
+      const preparingOrders = orders.filter(o => o.status === "preparing").length;
+      const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+      
+      res.json({
+        totalOrders,
+        pendingOrders,
+        preparingOrders,
+        totalRevenue: totalRevenue.toFixed(2)
+      });
+    } catch (error) {
+      console.error('Error fetching dashboard stats from Firestore:', error);
+      res.status(500).json({ error: 'Failed to fetch dashboard stats from Firestore' });
+    }
+  }
 }
 
 module.exports = new OrderController(); 
