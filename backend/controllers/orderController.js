@@ -35,7 +35,6 @@ class OrderController {
 
       // Return the created order in the expected format
       const createdOrder = {
-        id: orderId,
         customerName: customerName,
         total: totalAmount,
         status: 'pending',
@@ -51,14 +50,17 @@ class OrderController {
       };
 
       // Save order to Firebase Firestore
+      let firestoreOrderId = null;
       try {
-        await firebaseDb.collection('orders').add(createdOrder);
+        const docRef = await firebaseDb.collection('orders').add(createdOrder);
+        firestoreOrderId = docRef.id;
       } catch (firebaseError) {
         console.error('Error saving order to Firebase:', firebaseError);
         // Optionally, you can return a warning but not fail the whole request
       }
 
-      res.status(201).json(createdOrder);
+      // Respond with the Firestore order (with its generated string ID)
+      res.status(201).json({ id: firestoreOrderId, ...createdOrder });
     } catch (error) {
       console.error('Error creating order:', error);
       res.status(500).json({ error: 'Failed to create order' });
