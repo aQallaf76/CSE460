@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import '../styles/Order.css';
 import { useCart } from '../CartContext';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { showToast } from '../components/Toast';
 
 const Order = () => {
   const [menuItems, setMenuItems] = useState([]);
@@ -83,9 +85,11 @@ const Order = () => {
       
       // Show success notification
       showOrderSuccessNotification(orderData.customerName);
+      showToast('Order submitted successfully!', 'success');
     } catch (err) {
       setError('Failed to submit order. Please try again.');
       console.error('Error submitting order:', err);
+      showToast('Failed to submit order. Please try again.', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -124,7 +128,7 @@ const Order = () => {
     return (
       <div className="order-container">
         <div className="loading-container">
-          <div className="loading-spinner"></div>
+          <LoadingSpinner />
           <p>Loading our delicious menu...</p>
         </div>
       </div>

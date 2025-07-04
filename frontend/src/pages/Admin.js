@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import '../styles/Admin.css';
+import StatusBadge from '../components/StatusBadge';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { showToast } from '../components/Toast';
 
 const Admin = () => {
   const [stats, setStats] = useState({});
@@ -51,7 +54,10 @@ const Admin = () => {
   if (loading) {
     return (
       <div className="admin-container">
-        <div className="loading">Loading dashboard...</div>
+        <div className="loading-container">
+          <LoadingSpinner />
+          <p>Loading dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -219,9 +225,7 @@ const DashboardTab = ({ stats, orders }) => {
                     </td>
                     <td>${order.total}</td>
                     <td>
-                      <span className={`status-badge ${getStatusColor(order.status)}`}>
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                      </span>
+                      <StatusBadge status={order.status} />
                     </td>
                     <td>{formatRelativeTime(order.timestamp)}</td>
                   </tr>
@@ -448,8 +452,10 @@ const OrderManagementTab = ({ orders, onRefresh }) => {
     try {
       await api.updateOrderStatus(orderId, newStatus);
       onRefresh();
+      showToast('Order status updated!', 'success');
     } catch (error) {
       console.error('Error updating order status:', error);
+      showToast('Failed to update order status', 'error');
     }
   };
 

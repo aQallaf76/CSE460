@@ -9,6 +9,7 @@ import Admin from './pages/Admin';
 import Login from './pages/Login';
 import './App.css';
 import { CartProvider } from './CartContext';
+import Toast from './components/Toast';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -65,57 +66,60 @@ function App() {
   };
 
   return (
-    <CartProvider>
-      <Router>
-        <div className="App">
-          {isAuthenticated && <Navigation user={user} onLogout={logout} />}
-          
-          <main className="main-content">
-            <Routes>
-              <Route path="/login" element={
-                !isAuthenticated ? (
-                  <Login onLogin={login} />
-                ) : (
-                  <Navigate to="/menu" />
-                )
-              } />
-              
-              <Route path="/menu" element={
-                <ProtectedRoute>
-                  <Menu />
-                </ProtectedRoute>
-              } />
-              
-              <Route path="/order" element={
-                <ProtectedRoute>
-                  <Order />
-                </ProtectedRoute>
-              } />
-              
-              <Route path="/tracking" element={
-                <ProtectedRoute>
-                  <OrderTracking />
-                </ProtectedRoute>
-              } />
-              
-              <Route path="/kitchen" element={
-                <ProtectedRoute allowedRoles={['worker', 'manager']}>
-                  <Kitchen />
-                </ProtectedRoute>
-              } />
-              
-              <Route path="/admin" element={
-                <ProtectedRoute allowedRoles={['manager']}>
-                  <Admin />
-                </ProtectedRoute>
-              } />
-              
-              <Route path="/" element={<Navigate to="/menu" />} />
-            </Routes>
-          </main>
-        </div>
-      </Router>
-    </CartProvider>
+    <>
+      <Toast />
+      <CartProvider>
+        <Router>
+          <div className="App">
+            {isAuthenticated && <Navigation user={user} onLogout={logout} />}
+            
+            <main className="main-content">
+              <Routes>
+                <Route path="/login" element={
+                  !isAuthenticated ? (
+                    <Login onLogin={login} />
+                  ) : (
+                    <Navigate to="/menu" />
+                  )
+                } />
+                
+                <Route path="/menu" element={
+                  <ProtectedRoute>
+                    <Menu />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="/order" element={
+                  <ProtectedRoute>
+                    <Order />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="/tracking" element={
+                  <ProtectedRoute>
+                    <OrderTracking />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="/kitchen" element={
+                  <ProtectedRoute allowedRoles={['worker', 'manager']}>
+                    <Kitchen />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="/admin" element={
+                  <ProtectedRoute allowedRoles={['manager']}>
+                    <Admin />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="/" element={<Navigate to="/menu" />} />
+              </Routes>
+            </main>
+          </div>
+        </Router>
+      </CartProvider>
+    </>
   );
 }
 

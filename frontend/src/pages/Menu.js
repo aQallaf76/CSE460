@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import '../styles/Menu.css';
 import { useCart } from '../CartContext';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { showToast } from '../components/Toast';
 
 const Menu = () => {
   const [categories, setCategories] = useState([]);
@@ -30,6 +32,7 @@ const Menu = () => {
     } catch (err) {
       setError('Failed to load menu data');
       console.error('Error loading menu:', err);
+      showToast('Failed to load menu data', 'error');
     } finally {
       setLoading(false);
     }
@@ -70,20 +73,14 @@ const Menu = () => {
   };
 
   const showAddToCartFeedback = (itemName) => {
-    const notification = document.createElement('div');
-    notification.className = 'add-to-cart-notification';
-    notification.textContent = `Added ${itemName} to cart!`;
-    document.body.appendChild(notification);
-    setTimeout(() => {
-      notification.remove();
-    }, 2000);
+    showToast(`Added ${itemName} to cart!`, 'success');
   };
 
   if (loading) {
     return (
       <div className="menu-container">
         <div className="loading-container">
-          <div className="loading-spinner"></div>
+          <LoadingSpinner />
           <p>Loading our delicious menu...</p>
         </div>
       </div>

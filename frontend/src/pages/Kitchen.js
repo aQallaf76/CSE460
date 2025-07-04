@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import '../styles/Kitchen.css';
+import StatusBadge from '../components/StatusBadge';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { showToast } from '../components/Toast';
 
 const Kitchen = () => {
   const [orders, setOrders] = useState([]);
@@ -22,7 +25,7 @@ const Kitchen = () => {
       setError(null);
     } catch (err) {
       setError('Failed to load orders');
-      console.error('Error loading orders:', err);
+      showToast('Failed to load orders', 'error');
     } finally {
       setLoading(false);
     }
@@ -33,9 +36,10 @@ const Kitchen = () => {
       await api.updateOrderStatus(orderId, newStatus);
       // Reload orders to get updated data
       await loadOrders();
+      showToast('Order status updated!', 'success');
     } catch (err) {
       setError('Failed to update order status');
-      console.error('Error updating order status:', err);
+      showToast('Failed to update order status', 'error');
     }
   };
 
@@ -90,7 +94,10 @@ const Kitchen = () => {
   if (loading) {
     return (
       <div className="kitchen-container">
-        <div className="loading">Loading orders...</div>
+        <div className="loading-container">
+          <LoadingSpinner />
+          <p>Loading orders...</p>
+        </div>
       </div>
     );
   }
@@ -170,6 +177,7 @@ const Kitchen = () => {
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>
                       </select>
+                      <StatusBadge status={order.status} />
                     </td>
                     <td>{new Date(order.timestamp).toLocaleString()}</td>
                     <td>

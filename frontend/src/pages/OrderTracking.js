@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { api } from '../services/api';
 import { useCart } from '../CartContext';
 import '../styles/OrderTracking.css';
+import StatusBadge from '../components/StatusBadge';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { showToast } from '../components/Toast';
 
 const OrderTracking = () => {
   const [customerName, setCustomerName] = useState('');
@@ -24,6 +27,7 @@ const OrderTracking = () => {
     } catch (err) {
       setError('Failed to load orders');
       console.error('Error loading orders:', err);
+      showToast('Failed to load orders', 'error');
     } finally {
       setLoading(false);
     }
@@ -105,7 +109,7 @@ const OrderTracking = () => {
       <div className="orders-section">
         {loading ? (
           <div className="loading-container">
-            <div className="loading-spinner"></div>
+            <LoadingSpinner />
             <p>Loading your orders...</p>
           </div>
         ) : orders.length > 0 ? (
@@ -115,10 +119,7 @@ const OrderTracking = () => {
                 <div className="order-header">
                   <h3>Order #{order.id}</h3>
                   <div className="status-badge">
-                    <span className="status-icon">{getStatusIcon(order.status)}</span>
-                    <span className="status-text">
-                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                    </span>
+                    <StatusBadge status={order.status} />
                   </div>
                 </div>
 

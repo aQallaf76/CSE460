@@ -39,12 +39,14 @@
 }
 
 .stat-card {
-  background: white;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  border: 1px solid #e0e0e0;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 24px 18px;
+  margin: 0 8px 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .stat-card h3 {
@@ -293,4 +295,39 @@
   .status-btn {
     width: 100%;
   }
+}
+
+.orders-table table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  overflow: hidden;
+}
+.orders-table th, .orders-table td {
+  padding: 14px 18px;
+  text-align: left;
+}
+.orders-table th {
+  background: #f7f7f7;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  font-weight: 700;
+  border-bottom: 2px solid #ececec;
+}
+.orders-table tbody tr:nth-child(even) {
+  background: #fafbfc;
+}
+.orders-table tbody tr:hover {
+  background: #f1f7ff;
+  transition: background 0.2s;
+}
+.orders-table td {
+  border-bottom: 1px solid #f0f0f0;
+}
+.orders-table tr:last-child td {
+  border-bottom: none;
 } 
