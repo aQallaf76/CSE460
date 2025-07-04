@@ -66,6 +66,12 @@ const Admin = () => {
           📊 Dashboard
         </button>
         <button 
+          className={`tab-btn ${activeTab === 'preview' ? 'active' : ''}`}
+          onClick={() => handleTabChange('preview')}
+        >
+          👁️ Preview Menu
+        </button>
+        <button 
           className={`tab-btn ${activeTab === 'menu' ? 'active' : ''}`}
           onClick={() => handleTabChange('menu')}
         >
@@ -89,7 +95,9 @@ const Admin = () => {
       {activeTab === 'dashboard' && (
         <DashboardTab stats={stats} orders={orders} />
       )}
-      
+      {activeTab === 'preview' && (
+        <MenuPreviewTab menuItems={menuItems} categories={categories} />
+      )}
       {activeTab === 'menu' && (
         <MenuManagementTab 
           menuItems={menuItems}
@@ -101,11 +109,9 @@ const Admin = () => {
           setShowAddForm={setShowAddForm}
         />
       )}
-      
       {activeTab === 'orders' && (
         <OrderManagementTab orders={orders} onRefresh={loadDashboardData} />
       )}
-      
       {activeTab === 'analytics' && (
         <AnalyticsTab orders={orders} />
       )}
@@ -550,19 +556,115 @@ const AnalyticsTab = ({ orders }) => {
           </div>
         </div>
       </div>
-      
-      <div className="coming-soon">
-        <h3>🚀 More Analytics Coming Soon!</h3>
-        <p>Advanced reporting features including:</p>
-        <ul>
-          <li>Sales trends and forecasting</li>
-          <li>Popular items analysis</li>
-          <li>Customer behavior insights</li>
-          <li>Staff performance metrics</li>
-        </ul>
-      </div>
     </div>
   );
+};
+
+// Menu Preview Tab Component
+const MenuPreviewTab = ({ menuItems, categories }) => {
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredItems = () => {
+    let filtered = selectedCategory === 'All' 
+      ? menuItems 
+      : menuItems.filter(item => item.category === selectedCategory);
+
+    if (searchTerm) {
+      filtered = filtered.filter(item => 
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    return filtered.filter(item => item.available);
+  };
+
+  const displayItems = filteredItems();
+
+  return (
+    <div className="menu-preview-tab">
+      <div className="order-header">
+        <h1>👁️ Menu Preview</h1>
+        <p className="order-subtitle">This is how customers see the menu</p>
+      </div>
+      <div className="menu-controls">
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search for your favorite dishes..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <span className="search-icon">🔍</span>
+        </div>
+        <div className="category-filter">
+          <button 
+            className={`category-btn ${selectedCategory === 'All' ? 'active' : ''}`}
+            onClick={() => setSelectedCategory('All')}
+          >
+            🌟 All Items
+          </button>
+          {categories.map(category => (
+            <button
+              key={category.id}
+              className={`category-btn ${selectedCategory === category.name ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(category.name)}
+            >
+              {getCategoryIcon(category.name)} {category.name}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="menu-grid">
+        {displayItems.map(item => (
+          <div key={item.id} className="menu-item">
+            <div className="item-image">
+              <span className="item-emoji">{item.image}</span>
+            </div>
+            <div className="item-info">
+              <h3 className="item-name">{item.name}</h3>
+              <p className="item-description">{item.description}</p>
+              <div className="item-footer">
+                <span className="price">${item.price.toFixed(2)}</span>
+                <span className="availability-badge" style={{marginLeft: 12}}>
+                  {item.available ? <span className="available">✅ Available</span> : <span className="unavailable">❌ Unavailable</span>}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {displayItems.length === 0 && (
+        <div className="no-items">
+          <div className="no-items-icon">🍽️</div>
+          <h3>No items found</h3>
+          <p>
+            {searchTerm 
+              ? `No items match your search for "${searchTerm}". Try a different search term.`
+              : `No items available in the ${selectedCategory} category.`
+            }
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Helper function to get category icons
+const getCategoryIcon = (categoryName) => {
+  switch (categoryName) {
+    case 'Beverages':
+      return '🥤';
+    case 'Breakfast':
+      return '🌅';
+    case 'Lunch':
+      return '🌞';
+    case 'Dinner':
+      return '🌙';
+    default:
+      return '🍽️';
+  }
 };
 
 export default Admin; 

@@ -113,21 +113,22 @@ class OrderController {
       const { id } = req.params;
       const { status } = req.body;
       
-      const validStatuses = ['pending', 'preparing', 'ready', 'delivered', 'cancelled'];
+      const validStatuses = ['pending', 'preparing', 'ready', 'delivered', 'cancelled', 'completed'];
       if (!validStatuses.includes(status)) {
         return res.status(400).json({ error: 'Invalid status. Must be one of: ' + validStatuses.join(', ') });
       }
 
-      const sql = 'UPDATE orders SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?';
-      const result = await db.run(sql, [status, id]);
-      
-      if (result.changes === 0) {
-        return res.status(404).json({ error: 'Order not found' });
-      }
+      // Update order status in Firestore
+      const orderRef = firebaseDb.collection('orders').doc(id);
+      await orderRef.update({
+        status,
+        updatedAt: new Date().toISOString()
+      });
       
       res.json({ message: 'Order status updated successfully', status });
     } catch (error) {
-      res.status(500).json({ error: 'Failed to update order status' });
+      console.error('Error updating order status in Firestore:', error);
+      res.status(500).json({ error: 'Failed to update order status in Firestore' });
     }
   }
 
