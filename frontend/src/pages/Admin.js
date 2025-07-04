@@ -205,7 +205,7 @@ const DashboardTab = ({ stats, orders }) => {
               <tbody>
                 {orders.map(order => (
                   <tr key={order.id}>
-                    <td>#{order.id}</td>
+                    <td>#{order.id.slice(0, 6)}</td>
                     <td>{order.customerName}</td>
                     <td>
                       {order.items.map((item, index) => (
@@ -470,7 +470,7 @@ const OrderManagementTab = ({ orders, onRefresh }) => {
           <tbody>
             {orders.map(order => (
               <tr key={order.id}>
-                <td>#{order.id}</td>
+                <td>#{order.id.slice(0, 6)}</td>
                 <td>{order.customerName}</td>
                 <td>
                   {order.items.map((item, index) => (
