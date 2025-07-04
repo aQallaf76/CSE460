@@ -84,6 +84,9 @@ const Kitchen = () => {
     return formatTime(timestamp);
   };
 
+  // Sort orders by timestamp descending
+  const sortedOrders = [...orders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
   if (loading) {
     return (
       <div className="kitchen-container">
@@ -124,49 +127,58 @@ const Kitchen = () => {
 
       <div className="orders-section">
         <h2>All Orders</h2>
-        {orders.length === 0 ? (
+        {sortedOrders.length === 0 ? (
           <div className="no-orders">
             <p>No orders at the moment.</p>
           </div>
         ) : (
-          <div className="orders-grid">
-            {orders.map(order => (
-              <div key={order.id} className={`order-card ${getStatusColor(order.status)}`}>
-                <div className="order-header">
-                  <h3>Order #{order.id}</h3>
-                  <span className={`status-badge ${getStatusColor(order.status)}`}>
-                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                  </span>
-                </div>
-                <div className="customer-info">
-                  <p><strong>Customer:</strong> {order.customerName}</p>
-                  <p><strong>Time:</strong> {formatRelativeTime(order.timestamp)}</p>
-                </div>
-                <div className="order-items">
-                  <h4>Items:</h4>
-                  {order.items.map((item, index) => (
-                    <div key={index} className="order-item">
-                      <span className="item-name">{item.name}</span>
-                      <span className="item-quantity">x{item.quantity}</span>
-                      <span className="item-price">${item.price}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="order-footer">
-                  <div className="order-total">
-                    <strong>Total: ${order.total}</strong>
-                  </div>
-                  {order.status !== 'completed' && (
-                    <button
-                      onClick={() => updateOrderStatus(order.id, getNextStatus(order.status))}
-                      className="status-btn"
-                    >
-                      {getStatusButtonText(order.status)}
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+          <div className="orders-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Time</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedOrders.map(order => (
+                  <tr key={order.id}>
+                    <td>#{order.id.slice(0, 6)}</td>
+                    <td>{order.customerName}</td>
+                    <td>
+                      {order.items.map((item, index) => (
+                        <div key={index} className="order-item-summary">
+                          {item.name} x{item.quantity}
+                        </div>
+                      ))}
+                    </td>
+                    <td>${order.total}</td>
+                    <td>
+                      <select 
+                        value={order.status}
+                        onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                        className="status-select"
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="preparing">Preparing</option>
+                        <option value="ready">Ready</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
+                    </td>
+                    <td>{new Date(order.timestamp).toLocaleString()}</td>
+                    <td>
+                      <button className="view-btn">👁️ View</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
