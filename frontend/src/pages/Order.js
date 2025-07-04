@@ -94,11 +94,6 @@ const Order = () => {
     }
   };
 
-  const showOrderSuccessNotification = (customerName) => {
-    // Remove the manual DOM notification - keep only the toast
-    // The toast is already shown in handleSubmitOrder
-  };
-
   if (loading) {
     return (
       <div className="order-container">
