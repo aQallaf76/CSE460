@@ -52,6 +52,24 @@ app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 
+// Root endpoint - API information
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Sundevil Cafeteria API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      health: '/api/health',
+      menu: '/api/menu',
+      orders: '/api/orders',
+      admin: '/api/admin',
+      debug: '/api/debug/menu-count'
+    },
+    documentation: 'This is a REST API for the Sundevil Cafeteria ordering system',
+    frontend: 'https://sundevil-cafeteria-frontend.netlify.app'
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ 
