@@ -45,6 +45,9 @@ const Admin = () => {
     setShowAddForm(false);
   };
 
+  // Helper to filter only Firestore orders
+  const filterFirestoreOrders = orders => orders.filter(order => typeof order.id === 'string' && order.id.length > 8);
+
   if (loading) {
     return (
       <div className="admin-container">
@@ -93,7 +96,7 @@ const Admin = () => {
 
       {/* Tab Content */}
       {activeTab === 'dashboard' && (
-        <DashboardTab stats={stats} orders={orders} />
+        <DashboardTab stats={stats} orders={filterFirestoreOrders(orders)} />
       )}
       {activeTab === 'preview' && (
         <MenuPreviewTab menuItems={menuItems} categories={categories} />
@@ -110,10 +113,10 @@ const Admin = () => {
         />
       )}
       {activeTab === 'orders' && (
-        <OrderManagementTab orders={orders} onRefresh={loadDashboardData} />
+        <OrderManagementTab orders={filterFirestoreOrders(orders)} onRefresh={loadDashboardData} />
       )}
       {activeTab === 'analytics' && (
-        <AnalyticsTab orders={orders} />
+        <AnalyticsTab orders={filterFirestoreOrders(orders)} />
       )}
     </div>
   );

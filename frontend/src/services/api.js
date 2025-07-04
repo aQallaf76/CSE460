@@ -551,23 +551,28 @@ export const api = {
 
   async getOrders() {
     const result = await apiCall('/api/orders');
-    if (result) return result;
+    if (result) return result.filter(order => typeof order.id === 'string' && order.id.length > 8);
     
     await delay(300);
-    return mockOrders;
+    return mockOrders.filter(order => typeof order.id === 'string' && order.id.length > 8);
   },
 
   async getOrdersByCustomer(customerName) {
     const result = await apiCall(`/api/orders?customer=${encodeURIComponent(customerName)}`);
-    if (result) return result;
+    if (result) return result.filter(order => typeof order.id === 'string' && order.id.length > 8);
     
     await delay(300);
     return mockOrders.filter(order => 
-      order.customerName.toLowerCase() === customerName.toLowerCase()
+      order.customerName.toLowerCase() === customerName.toLowerCase() &&
+      typeof order.id === 'string' && order.id.length > 8
     );
   },
 
   async updateOrderStatus(orderId, status) {
+    // Only allow Firestore string IDs
+    if (typeof orderId !== 'string' || orderId.length <= 8) {
+      throw new Error('Invalid Firestore order ID');
+    }
     const result = await apiCall(`/api/orders/${orderId}/status`, {
       method: 'PUT',
       body: JSON.stringify({ status })
