@@ -43,10 +43,6 @@ const Kitchen = () => {
     }
   };
 
-  const formatTime = (timestamp) => {
-    return new Date(timestamp).toLocaleTimeString();
-  };
-
   // Sort orders by timestamp descending
   const sortedOrders = [...orders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
