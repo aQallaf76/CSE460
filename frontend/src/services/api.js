@@ -421,12 +421,59 @@ const apiCall = async (endpoint, options = {}) => {
   }
 };
 
+// Helper function to get emoji for menu items
+const getItemEmoji = (itemName) => {
+  const name = itemName.toLowerCase();
+  if (name.includes('coffee')) return '☕';
+  if (name.includes('tea')) return '🫖';
+  if (name.includes('soda') || name.includes('soft drink')) return '🥤';
+  if (name.includes('beer')) return '🍺';
+  if (name.includes('water')) return '💧';
+  if (name.includes('juice')) return '🧃';
+  if (name.includes('pancake')) return '🥞';
+  if (name.includes('waffle')) return '🧇';
+  if (name.includes('omelette') || name.includes('egg')) return '🍳';
+  if (name.includes('bacon')) return '🥓';
+  if (name.includes('toast')) return '🍞';
+  if (name.includes('burrito')) return '🌯';
+  if (name.includes('bagel')) return '🥯';
+  if (name.includes('sandwich')) return '🥪';
+  if (name.includes('yogurt') || name.includes('parfait')) return '🥛';
+  if (name.includes('granola')) return '🥣';
+  if (name.includes('burger')) return '🍔';
+  if (name.includes('salad')) return '🥗';
+  if (name.includes('ribs') || name.includes('bbq')) return '🍖';
+  if (name.includes('steak') || name.includes('brisket')) return '🥩';
+  if (name.includes('chicken')) return '🍗';
+  if (name.includes('fish') || name.includes('salmon')) return '🐟';
+  if (name.includes('lobster')) return '🦞';
+  if (name.includes('shrimp')) return '🦐';
+  if (name.includes('pasta') || name.includes('spaghetti') || name.includes('lasagna')) return '🍝';
+  if (name.includes('taco')) return '🌮';
+  if (name.includes('wings')) return '🍗';
+  if (name.includes('pizza')) return '🍕';
+  if (name.includes('soup') || name.includes('chowder')) return '🥣';
+  if (name.includes('pepper')) return '🫑';
+  return '🍽️'; // Default emoji
+};
+
 // API functions with real backend fallback to mock data
 export const api = {
   // Menu API
   async getMenuCategories() {
     const result = await apiCall('/api/menu/categories');
-    if (result) return result;
+    if (result) {
+      // Clean up categories: capitalize and remove duplicates
+      const cleanedCategories = result
+        .map(cat => cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase())
+        .filter((cat, index, self) => self.indexOf(cat) === index);
+      
+      return cleanedCategories.map((category, index) => ({
+        id: index + 1,
+        name: category,
+        description: `${category} items`
+      }));
+    }
     
     await delay(300);
     return mockMenuCategories;
@@ -434,7 +481,25 @@ export const api = {
 
   async getMenuItems() {
     const result = await apiCall('/api/menu/items');
-    if (result) return result;
+    if (result) {
+      // Clean up the data: deduplicate items and add missing fields
+      const cleanedItems = result.map(item => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        category: item.category,
+        image: getItemEmoji(item.name), // Add emoji based on item name
+        available: item.available === 1
+      }));
+      
+      // Remove duplicates based on name and category
+      const uniqueItems = cleanedItems.filter((item, index, self) => 
+        index === self.findIndex(t => t.name === item.name && t.category === item.category)
+      );
+      
+      return uniqueItems;
+    }
     
     await delay(300);
     return mockMenuItems;
