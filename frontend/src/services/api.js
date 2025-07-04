@@ -656,5 +656,12 @@ export const api = {
       mockMenuItems.splice(index, 1);
     }
     return { success: true };
+  },
+
+  async getPendingOrders() {
+    const result = await apiCall('/api/orders/pending');
+    if (result) return result.filter(order => typeof order.id === 'string' && order.id.length > 8);
+    await delay(300);
+    return [];
   }
 }; 

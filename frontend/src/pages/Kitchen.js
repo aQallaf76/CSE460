@@ -17,7 +17,7 @@ const Kitchen = () => {
   const loadOrders = async () => {
     try {
       setLoading(true);
-      const ordersData = await api.getOrders();
+      const ordersData = await api.getPendingOrders();
       setOrders(ordersData);
       setError(null);
     } catch (err) {
