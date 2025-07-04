@@ -203,7 +203,7 @@ const DashboardTab = ({ stats, orders }) => {
                 </tr>
               </thead>
               <tbody>
-                {orders.map(order => (
+                {orders.filter(order => typeof order.id === 'string' && order.id.length > 8).map(order => (
                   <tr key={order.id}>
                     <td>#{order.id.slice(0, 6)}</td>
                     <td>{order.customerName}</td>
@@ -468,7 +468,7 @@ const OrderManagementTab = ({ orders, onRefresh }) => {
             </tr>
           </thead>
           <tbody>
-            {orders.map(order => (
+            {orders.filter(order => typeof order.id === 'string' && order.id.length > 8).map(order => (
               <tr key={order.id}>
                 <td>#{order.id.slice(0, 6)}</td>
                 <td>{order.customerName}</td>

@@ -131,7 +131,7 @@ const Kitchen = () => {
           </div>
         ) : (
           <div className="orders-grid">
-            {orders.map(order => (
+            {orders.filter(order => typeof order.id === 'string' && order.id.length > 8).map(order => (
               <div key={order.id} className={`order-card ${getStatusColor(order.status)}`}>
                 <div className="order-header">
                   <h3>Order #{order.id}</h3>
