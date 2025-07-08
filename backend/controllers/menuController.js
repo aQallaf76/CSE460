@@ -71,19 +71,18 @@ class MenuController {
     try {
       const { id } = req.params;
       const { name, description, price, category, available } = req.body;
-      
+      const availableNum = available ? 1 : 0;
+      console.log('[updateMenuItem] id:', id, 'name:', name, 'description:', description, 'price:', price, 'category:', category, 'available:', available, 'availableNum:', availableNum);
       const sql = `
         UPDATE menu_items 
         SET name = ?, description = ?, price = ?, category = ?, available = ?
         WHERE id = ?
       `;
-      
-      const result = await db.run(sql, [name, description, price, category, available, id]);
-      
+      const result = await db.run(sql, [name, description, price, category, availableNum, id]);
+      console.log('[updateMenuItem] update result:', result);
       if (result.changes === 0) {
         return res.status(404).json({ error: 'Menu item not found' });
       }
-      
       res.json({ message: 'Menu item updated successfully' });
     } catch (error) {
       res.status(500).json({ error: 'Failed to update menu item' });
