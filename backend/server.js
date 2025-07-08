@@ -37,11 +37,24 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 }));
+
+// Explicitly handle all OPTIONS preflight requests
+app.options('*', cors({
+  origin: [
+    'https://sundevil-cafeteria-frontend.netlify.app',
+    'https://sundevil-cafeteria.netlify.app',
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200
+}), (req, res) => {
+  console.log('CORS preflight for:', req.headers.origin);
+  res.sendStatus(200);
+});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Handle preflight requests
-app.options('*', cors());
 
 // Initialize database
 const db = require('./models/database');
