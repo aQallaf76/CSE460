@@ -97,4 +97,15 @@ router.get('/analytics', async (req, res) => {
   }
 });
 
+// TEMPORARY: Cleanup duplicate menu items
+router.post('/cleanup-menu-duplicates', async (req, res) => {
+  try {
+    const sql = `DELETE FROM menu_items WHERE id NOT IN (SELECT MIN(id) FROM menu_items GROUP BY name, category);`;
+    await db.run(sql);
+    res.json({ message: 'Duplicate menu items removed from the database.' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to clean up duplicates', details: error.message });
+  }
+});
+
 module.exports = router; 
