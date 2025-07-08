@@ -1,10 +1,10 @@
 const db = require('../models/database');
 
 class MenuController {
-  // Get all menu items
+  // Get all menu items (for customer menu, show all regardless of availability)
   async getAllMenuItems(req, res) {
     try {
-      const sql = 'SELECT * FROM menu_items WHERE available = 1 ORDER BY category, name';
+      const sql = 'SELECT * FROM menu_items ORDER BY category, name';
       const menuItems = await db.query(sql);
       res.json(menuItems);
     } catch (error) {

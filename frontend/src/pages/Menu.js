@@ -169,7 +169,7 @@ const Menu = () => {
       {/* Menu Items */}
       <div className="menu-grid">
         {displayItems.map(item => (
-          <div key={item.id} className="menu-item">
+          <div key={item.id} className={`menu-item${!item.available ? ' unavailable' : ''}`}>
             <div className="item-header">
               <span className="item-emoji">{item.image}</span>
               <h3 className="item-name">{item.name}</h3>
@@ -178,7 +178,7 @@ const Menu = () => {
             <div className="item-footer-row">
               <span className="item-price">${item.price.toFixed(2)}</span>
               <span className={`item-status ${item.available ? 'available' : 'unavailable'}`}>{item.available ? '✅ Available' : '❌ Unavailable'}</span>
-              {item.available && (
+              {item.available ? (
                 <button 
                   className="quick-add-btn"
                   onClick={() => handleQuickAdd(item)}
@@ -186,9 +186,10 @@ const Menu = () => {
                 >
                   ➕
                 </button>
+              ) : (
+                <span className="unavailable-badge">Unavailable</span>
               )}
             </div>
-            {!item.available && <div className="unavailable-overlay">Unavailable</div>}
           </div>
         ))}
       </div>
