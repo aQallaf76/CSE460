@@ -117,6 +117,17 @@ class MenuController {
       res.status(500).json({ error: 'Failed to fetch categories' });
     }
   }
+
+  // Get all menu items (admin, show all regardless of availability)
+  async getAllMenuItemsAdmin(req, res) {
+    try {
+      const sql = 'SELECT * FROM menu_items ORDER BY category, name';
+      const menuItems = await db.query(sql);
+      res.json(menuItems);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch menu items (admin)' });
+    }
+  }
 }
 
 module.exports = new MenuController(); 

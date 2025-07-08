@@ -27,7 +27,7 @@ const Admin = () => {
       const [statsData, ordersData, menuData, categoriesData] = await Promise.all([
         api.getDashboardStats(),
         api.getOrders(),
-        api.getMenuItems(),
+        api.getAllMenuItemsAdmin(), // Use admin endpoint
         api.getMenuCategories()
       ]);
       

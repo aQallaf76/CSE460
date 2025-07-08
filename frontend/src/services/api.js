@@ -515,6 +515,29 @@ export const api = {
     return mockMenuItems.filter(item => item.category === category);
   },
 
+  async getAllMenuItemsAdmin() {
+    const result = await apiCall('/api/menu/admin/items');
+    if (result) {
+      // Clean up the data: deduplicate items and add missing fields
+      const cleanedItems = result.map(item => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        category: item.category,
+        image: getItemEmoji(item.name), // Add emoji based on item name
+        available: item.available === 1
+      }));
+      // Remove duplicates based on name and category
+      const uniqueItems = cleanedItems.filter((item, index, self) => 
+        index === self.findIndex(t => t.name === item.name && t.category === item.category)
+      );
+      return uniqueItems;
+    }
+    await delay(300);
+    return mockMenuItems;
+  },
+
   // Orders API
   async createOrder(orderData) {
     console.log('Creating order with data:', orderData);

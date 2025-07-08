@@ -8,6 +8,9 @@ router.get('/', menuController.getAllMenuItems);
 // GET /api/menu/items - Get all menu items (alternative endpoint)
 router.get('/items', menuController.getAllMenuItems);
 
+// GET /api/menu/admin/items - Get all menu items (admin, show all)
+router.get('/admin/items', menuController.getAllMenuItemsAdmin);
+
 // GET /api/menu/categories - Get all categories
 router.get('/categories', menuController.getCategories);
 
